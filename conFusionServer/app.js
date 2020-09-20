@@ -6,10 +6,12 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
+const passport = require('passport');
+const authenticate = require('./authenticate');
 
 const Dishes = require('./models/dishes');
 
-const url = 'mongodb://localhost:27017/conFusion';
+const url = 'mongodb+srv://serj1c:spartak1@cluster0.q6r0g.mongodb.net/<dbname>?retryWrites=true&w=majority';
 const connect = mongoose.connect(url, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -48,26 +50,21 @@ app.use(session({
   store: new FileStore()
 }));
 
+// Auth using Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 function auth(req, res, next) {
-  console.log(req.session);
-
-  if(!req.session.user) {
+  if(!req.user) {
       let err = new Error('You are not authenticated!')
       err.status = 401;
       return next(err);
   }
   else {
-    if(req.session.user === 'authenticated') {
-      next();
-    }
-    else {
-      let err = new Error('You are not authenticated!')
-      err.status = 403;
-      return next(err);
-    }
+    next();
   }
 }
 
