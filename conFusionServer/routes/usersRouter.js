@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const User = require('../models/user');
 const passport = require('passport');
+const authenticate = require('../authenticate');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -26,8 +27,9 @@ router.post('/signup', (req, res, next) => {
 
 // User login
 router.post('/login', passport.authenticate('local'), (req, res) => {
+  const token = authenticate.getToken({ _id: req.user._id });
   res.setHeader('Content-Type', 'application/json');
-  res.status(200).json({ success: true, status: 'You are successfully logged in' });
+  res.status(200).json({ success: true, token: token, status: 'You are successfully logged in' });
 });
 
 // User is making logout --> get request since we do not provide any info
