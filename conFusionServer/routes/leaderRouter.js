@@ -1,5 +1,6 @@
 const express = require('express');
 const leaderRouter = express.Router();
+const authenticate = require('../authenticate');
 
 leaderRouter.route('/', (req, res, next) => {
     res.statusCode = 200;
@@ -8,14 +9,14 @@ leaderRouter.route('/', (req, res, next) => {
 .get((req, res) => {
     res.end('The data will be sent');
 })
-.post((req, res) => {
+.post(authenticate.verifyUser, (req, res) => {
     res.end('The leader' + req.body.name + ' will be added');
 })
-.put((req, res) => {
+.put(authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
     res.end('PUT is not allowed on /leaders')
 })
-.delete((req, res) => {
+.delete(authenticate.verifyUser, (req, res) => {
     res.end('All leaders deleted!')
 })
 

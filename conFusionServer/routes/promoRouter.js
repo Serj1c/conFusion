@@ -1,5 +1,6 @@
 const express = require('express');
 const promoRouter = express.Router();
+const authenticate = require('../authenticate');
 
 promoRouter.route('/', (req, res, next) => {
     res.statusCode = 200;
@@ -9,14 +10,14 @@ promoRouter.route('/', (req, res, next) => {
 .get((req, res) => {
     res.end('The data will be sent');
 })
-.post((req, res) => {
+.post(authenticate.verifyUser, (req, res) => {
     res.end("The promotion " + req.body.name + " will be added with details " + req.body.description)
 })
-.put((req, res) => {
+.put(authenticate.verifyUser, (req, res) => {
     res.statusCode = 403;
     res.end("PUT is not allowed on /promotions");
 })
-.delete((req, res) => {
+.delete(authenticate.verifyUser, (req, res) => {
     res.end("All promotions deleted!")
 });
 
@@ -27,14 +28,14 @@ promoRouter.route('/:promoID', (req, res, next) =>{
 .get((req, res) =>{
     res.end("The data about the promotion: " + req.params.promoID + " will be sent");
 })
-.post((req, res) =>{
+.post(authenticate.verifyUser, (req, res) =>{
     res.end("POST is not allowed on /promotions/:promoID")
 })
-.put((req, res) => {
+.put(authenticate.verifyUser, (req, res) => {
     res.write("Updating the promotion: " + req.params.promoID + "\n");
     res.end("The promotion " + req.body.name + " will be updated with details: " + req.body.description);
 })
-.delete((req, res) => {
+.delete(authenticate.verifyUser, (req, res) => {
     res.end("Deleting the promotion: " + req.params.promoID);
 });
 

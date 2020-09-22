@@ -8,10 +8,11 @@ const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const passport = require('passport');
 const authenticate = require('./authenticate');
+const config = require('./config');
 
 const Dishes = require('./models/dishes');
 
-const url = 'mongodb+srv://serj1c:spartak1@cluster0.q6r0g.mongodb.net/<dbname>?retryWrites=true&w=majority';
+const url = config.mongoUrl;
 const connect = mongoose.connect(url, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -40,35 +41,11 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-//app.use(cookieParser('juicy-pussy'));
-
-app.use(session({
-  name: 'session_id',
-  secret: 'juicy_pussy',
-  saveUninitialized: false,
-  resave: false,
-  store: new FileStore()
-}));
-
 // Auth using Passport
 app.use(passport.initialize());
-app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-
-function auth(req, res, next) {
-  if(!req.user) {
-      let err = new Error('You are not authenticated!')
-      err.status = 401;
-      return next(err);
-  }
-  else {
-    next();
-  }
-}
-
-app.use(auth);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
