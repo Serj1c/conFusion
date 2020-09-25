@@ -14,9 +14,10 @@ const commentSchema = new Schema({
         type: String,
         required: true
     },
+    // author now is taken from userSchema (user.js)
     author: {
-        type: String,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     }
 },
 {

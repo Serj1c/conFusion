@@ -5,16 +5,15 @@ const passportLocalMongoose = require('passport-local-mongoose');
 const User = new Schema({
 
     // can be removed cause now we are using passport local mongoose
-/*     username: {
+    firstname: {
         type: String,
-        required: true,
-        unique: true
+        default: ''
     },
-    password: {
+    lastname: {
         type: String,
-        required: true,
+        default: ''
 
-    }, */
+    }, 
     admin: {
         type: Boolean,
         default: false
